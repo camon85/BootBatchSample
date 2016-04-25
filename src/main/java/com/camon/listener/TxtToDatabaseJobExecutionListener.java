@@ -1,4 +1,4 @@
-package com.camon;
+package com.camon.listener;
 
 import com.camon.domain.Book;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.camon;
+package com.camon.processor;
 
 import com.camon.domain.Book;
 import com.google.gson.Gson;
