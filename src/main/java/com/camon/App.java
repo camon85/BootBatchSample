@@ -12,6 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Date;
+
 /**
  * Created by user on 2016-03-31.
  */
@@ -26,12 +28,12 @@ public class App {
         ConfigurableApplicationContext ctx = app.run(args);
 
         Job txtToDatabaseJob = ctx.getBean("txtToDatabaseJob", Job.class);
-        JobParameters defaultJobParameters = new JobParametersBuilder().toJobParameters();
-//        JobParameters dateJobParameters = new JobParametersBuilder().addDate("date", new Date()).toJobParameters();
+        JobParameters dateJobParameters = new JobParametersBuilder().addDate("date", new Date()).toJobParameters();
 
         JobLauncher jobLauncher = ctx.getBean(JobLauncher.class);
-        JobExecution jobExecution = jobLauncher.run(txtToDatabaseJob, defaultJobParameters);
+        JobExecution jobExecution = jobLauncher.run(txtToDatabaseJob, dateJobParameters);
         BatchStatus status = jobExecution.getStatus();
         log.info("getStatus -> {}", status);
+
     }
 }
