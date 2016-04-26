@@ -5,6 +5,7 @@ import com.camon.domain.Book;
 import com.camon.processor.DatabaseToConsoleStep1Processor;
 import com.camon.processor.TxtToDatabaseStep1Processor;
 import com.camon.processor.TxtToDatabaseStep2Processor;
+import com.camon.tasklet.MyTasklet;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -128,22 +129,22 @@ public class BatchConfiguration {
         return jobBuilderFactory.get("databaseToConsoleJob")
                 .incrementer(new RunIdIncrementer())
 //                .listener(txtToDatabaseJobExecutionListener()) // 특별히 전후 처리 할 게 없으면 없어도 됨
-                .flow(databaseToConsoleSetp1())
+                .flow(databaseToConsoleStep1())
                 .end()
                 .build();
     }
 
     @Bean
-    public Step databaseToConsoleSetp1() {
-        return stepBuilderFactory.get("databaseToConsoleSetp1")
+    public Step databaseToConsoleStep1() {
+        return stepBuilderFactory.get("databaseToConsoleStep1")
                 .<Book, Book> chunk(1000)
-                .reader(databaseToConsoleSetp1Reader())
+                .reader(databaseToConsoleStep1Reader())
                 .processor(databaseToConsoleStep1Processor()) // processor, writer 둘 중 하나만 있어도 문제 없음
                 .build();
     }
 
     @Bean
-    public JdbcCursorItemReader<Book> databaseToConsoleSetp1Reader() {
+    public JdbcCursorItemReader<Book> databaseToConsoleStep1Reader() {
         JdbcCursorItemReader<Book> reader = new JdbcCursorItemReader<>();
         String sql = "SELECT id, title, writer, publisher, publish_date FROM books order by publisher";
         reader.setSql(sql);
@@ -158,4 +159,21 @@ public class BatchConfiguration {
     }
     //=================== end databaseToConsoleJob ===================
 
+
+
+    //=================== start taskletJob ===================
+    @Bean
+    public Job taskletJob(Step taskletStep) throws Exception {
+        return jobBuilderFactory.get("taskletJob")
+                .incrementer(new RunIdIncrementer())
+                .start(taskletStep)
+                .build();
+    }
+
+    @Bean
+    public Step taskletStep() {
+        return stepBuilderFactory.get("taskletStep")
+                .tasklet(new MyTasklet()).build();
+    }
+    //=================== end taskletJob ===================
 }
