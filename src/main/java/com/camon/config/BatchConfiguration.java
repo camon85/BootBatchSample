@@ -129,22 +129,22 @@ public class BatchConfiguration {
         return jobBuilderFactory.get("databaseToConsoleJob")
                 .incrementer(new RunIdIncrementer())
 //                .listener(txtToDatabaseJobExecutionListener()) // 특별히 전후 처리 할 게 없으면 없어도 됨
-                .flow(databaseToConsoleJSetp1())
+                .flow(databaseToConsoleSetp1())
                 .end()
                 .build();
     }
 
     @Bean
-    public Step databaseToConsoleJSetp1() {
-        return stepBuilderFactory.get("databaseToConsoleJSetp1")
+    public Step databaseToConsoleSetp1() {
+        return stepBuilderFactory.get("databaseToConsoleSetp1")
                 .<Book, Book> chunk(1000)
-                .reader(databaseToConsoleJSetp1Reader())
+                .reader(databaseToConsoleSetp1Reader())
                 .processor(databaseToConsoleStep1Processor()) // processor, writer 둘 중 하나만 있어도 문제 없음
                 .build();
     }
 
     @Bean
-    public JdbcCursorItemReader<Book> databaseToConsoleJSetp1Reader() {
+    public JdbcCursorItemReader<Book> databaseToConsoleSetp1Reader() {
         JdbcCursorItemReader<Book> reader = new JdbcCursorItemReader<>();
         String sql = "SELECT id, title, writer, publisher, publish_date FROM books order by publisher";
         reader.setSql(sql);
