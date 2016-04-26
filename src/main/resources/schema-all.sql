@@ -1,6 +1,4 @@
-DROP TABLE books IF EXISTS;
-
-CREATE TABLE books  (
+CREATE TABLE IF NOT EXISTS books (
     id BIGINT,
     title VARCHAR(100),
     writer VARCHAR(100),

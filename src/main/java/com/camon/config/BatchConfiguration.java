@@ -51,7 +51,6 @@ public class BatchConfiguration {
     @Bean
     public Job txtToDatabaseJob() {
         return jobBuilderFactory.get("txtToDatabaseJob")
-                .incrementer(new RunIdIncrementer())
                 .listener(txtToDatabaseJobExecutionListener())
                 .flow(txtToDatabaseStep1())
                 .next(txtToDatabaseStep2())
